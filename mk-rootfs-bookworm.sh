@@ -33,7 +33,7 @@ echo -e "\033[36m Extract image \033[0m"
 sudo tar -xpf live-image-$ARCH.tar.tar.gz
 
 if [ "$BOARD" == "radxa" ]; then
-sudo cp -rf ./linux-5.15/tmp/lib/modules $TARGET_ROOTFS_DIR/lib
+sudo cp -rf ./linux-6.5-rc6/tmp/lib/modules $TARGET_ROOTFS_DIR/lib
 elif [ "$BOARD" == "rpi4b" ]; then
 sudo cp -rf ./linux/tmp/lib/modules $TARGET_ROOTFS_DIR/lib
 elif [ "$BOARD" == "tinker" ]; then

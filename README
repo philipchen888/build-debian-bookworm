@@ -34,9 +34,9 @@ Steps to build Debian Bookworm sdcard image ( lxde, xfce4, kde, gnome ):
 4. cd ~/build-debian-bookworm/radxa
    sudo apt-get install libgnutls28-dev
    git clone https://github.com/u-boot/u-boot.git -b u-boot-2023.07.y
-   wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.tar.xz
-   tar -xJf linux-5.15.tar.xz
-   cd linux-5.15; mkdir tmp; cd tmp; mkdir lib;
+   wget https://git.kernel.org/torvalds/t/linux-6.5-rc6.tar.gz
+   tar -xzf linux-6.5-rc6.tar.gz
+   cd linux-6.5-rc6; mkdir tmp; cd tmp; mkdir lib;
    cd ../../; mkdir out;
 
    make all
@@ -92,8 +92,6 @@ date
 sudo apt install speedtest-cli libjpeg-dev libpng-dev libpng16-16 pkg-config libx11-dev python3-pip python3-setuptools chromium chromium-sandbox ffmpeg mpv glmark2 yt-dlp pandoc
 
 speedtest-cli
-or if not working:
-speedtest-cli --secure
 
 glmark2
 
