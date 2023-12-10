@@ -21,7 +21,7 @@ Steps to build Debian Bookworm sdcard image ( lxde, xfce4, kde, gnome ):
    sudo make install
 
 3. cd ~/build-debian-bookworm/rpi4b
-   git clone https://github.com/raspberrypi/linux --depth=1 -b rpi-5.4.y
+   git clone https://github.com/raspberrypi/linux --depth=1 -b rpi-6.1.y
    cd linux; mkdir tmp; cd tmp; mkdir lib;
    cd ../../; mkdir out;
 
@@ -34,9 +34,13 @@ Steps to build Debian Bookworm sdcard image ( lxde, xfce4, kde, gnome ):
 4. cd ~/build-debian-bookworm/radxa
    sudo apt-get install libgnutls28-dev
    git clone https://github.com/u-boot/u-boot.git -b u-boot-2023.07.y
-   wget https://git.kernel.org/torvalds/t/linux-6.5-rc6.tar.gz
-   tar -xzf linux-6.5-rc6.tar.gz
-   cd linux-6.5-rc6; mkdir tmp; cd tmp; mkdir lib;
+   git clone https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git --depth=1
+   cp rk3399-rock-pi-4b.dts ./linux/arch/arm64/boot/dts/rockchip/
+   cp rk3399-rock-pi-4.dtsi ./linux/arch/arm64/boot/dts/rockchip/
+   delete rk3399-rock-pi-4a-plus.dtb in ./linux/arch/arm64/boot/dts/rockchip/Makefile
+   delete rk3399-rock-pi-4b-plus.dtb in ./linux/arch/arm64/boot/dts/rockchip/Makefile
+   delete rk3399-rock-pi-4c.dtb in ./linux/arch/arm64/boot/dts/rockchip/Makefile
+   cd linux; mkdir tmp; cd tmp; mkdir lib;
    cd ../../; mkdir out;
 
    make all
@@ -47,9 +51,10 @@ Steps to build Debian Bookworm sdcard image ( lxde, xfce4, kde, gnome ):
 
 5. cd ~/build-debian-bookworm/tinker
    git clone https://github.com/TinkerBoard/debian_u-boot.git --depth=1 -b release
-   wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
-   tar -xJf linux-5.10.tar.xz
-   cd linux-5.10; mkdir tmp; cd tmp; mkdir lib;
+   git clone https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git --depth=1
+   cat multi_v7_defconfig >> ./linux/arch/arm/configs/multi_v7_defconfig
+   cp rk3288-tinker.dtsi ./linux/arch/arm/boot/dts/rockchip/
+   cd linux; mkdir tmp; cd tmp; mkdir lib;
    cd ../../; mkdir out;
 
    make all
@@ -58,16 +63,11 @@ Steps to build Debian Bookworm sdcard image ( lxde, xfce4, kde, gnome ):
 
    sudo dd if=./out/sdcard.img of=/dev/sda bs=4096 conv=notrunc,fsync
 
-
-Wifi drivers of radxa and tinker is not supported in linux mainline kernel.
-Plugin ethernet cable to radxa and tinker.
-Plugin USB headphone to tinker and rpi4b.
 Plugin sdcard to SBC.
 Login:
 username: linaro
 password: linaro
 mouse right click on the screen, select terminal emulator.
-Setup wifi for rpi4b.
 sudo ifconfig
 sudo nmcli dev wifi connect "SSID" password "PASSWD"
 sudo dpkg-reconfigure tzdata
@@ -84,12 +84,13 @@ For xfce4: sudo tasksel install xfce-desktop  ( then sudo apt remove --purge ope
 For kde:   sudo tasksel install kde-desktop   ( then sudo apt remove --purge openbox )
 For gnome: sudo tasksel install gnome-desktop ( then sudo apt remove --purge openbox )
 sync
-sudo reboot
+sudo shutdown -h now
+Power off, power on.
 Disable power saving and screen saver.
 glxinfo | grep OpenGL
 date
 
-sudo apt install speedtest-cli libjpeg-dev libpng-dev libpng16-16 pkg-config libx11-dev python3-pip python3-setuptools chromium chromium-sandbox ffmpeg mpv glmark2 yt-dlp pandoc
+sudo apt install speedtest-cli libjpeg-dev libpng-dev libpng16-16 pkg-config libx11-dev python3-pip python3-setuptools chromium chromium-sandbox ffmpeg mpv glmark2 pandoc
 
 speedtest-cli
 
@@ -103,3 +104,8 @@ make
 cd ../
 ~/yt-dlp/yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]' hyUhEjtlDLA -o avemaria.mp4
 mpv avemaria.mp4
+
+sudo rfkill list
+hciconfig hci0
+hcitool dev
+hciconfig -a
